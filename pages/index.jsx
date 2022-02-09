@@ -1,6 +1,8 @@
 import Hero from '../components/Hero'
 import Header from '../components/Header'
 import { useWeb3 } from '@3rdweb/hooks'
+import { useEffect } from 'react'
+import { client } from '../lib/sanityClient'
 // Styles
 const style = {
   wrapper: ``,
@@ -10,11 +12,23 @@ const style = {
 }
 export default function Home() {
   const { address, connectWallet } = useWeb3()
+  useEffect(() => {
+    if (!address) return
+    ;(async () => {
+      const userDoc = {
+        _type: 'users',
+        _id: address,
+        userName: 'Unnamed',
+        walletAddress: address,
+      }
+      const result = await client.create(userDoc)
+      console.log(result)
+    })()
+  }, [address])
   return (
     <div className={style.wrapper}>
       {address ? (
         <>
-          {' '}
           <Header />
           <Hero />
         </>
